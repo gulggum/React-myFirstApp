@@ -1,44 +1,47 @@
 // import Button from "./Button";
 // import styles from "./App.module.css";
-import { useState } from "react";
+
+// import { json, response } from "express";
+import { useEffect, useState } from "react";
 
 function App() {
-  const [todo, setTodo] = useState("");
-  const [todoList, setTodoList] = useState([]);
-  const onChange = (event) => {
-    setTodo(event.target.value);
+  const [loading, setLoading] = useState(true);
+  const [movies, setMovies] = useState([]);
+  const getMovies = async () => {
+    const response = await fetch(
+      "https://yts.mx/api/v2/list_movies.json?minimum_rating=8.8&sort_by=yea"
+    );
+    const json = await response.json();
+    setMovies(json.data.movies);
+    setLoading(false);
   };
-
-  const onSubmit = (event) => {
-    event.preventDefault();
-    setTodo("");
-    setTodoList((newTodo) => [todo, ...newTodo]);
-    console.log(todoList);
-  };
-  const onDelete = (index) => {
-    setTodoList(todoList.filter((_, todoIndex) => index !== todoIndex)); //index 는 배열숫자,즉 현재 몇번째인지 위치한 번호(0,1,2..)
-  };
-
+  useEffect(() => {
+    getMovies();
+  }, []);
+  console.log(movies);
   return (
     <div>
-      <h1>My Todo List</h1>
-      <form onSubmit={onSubmit}>
-        <input
-          value={todo}
-          onChange={onChange}
-          type="text"
-          placeholder="Please your Todo"
-        ></input>
-        <button>Submit</button>
-      </form>
-      <ul>
-        {todoList.map((todo, index) => (
-          <li key={index}>
-            {todo}
-            <button onClick={() => onDelete(index)}>❌</button>
-          </li>
-        ))}
-      </ul>
+      {loading ? (
+        <h1>
+          <strong>"Loading...."</strong>
+        </h1>
+      ) : (
+        <div>
+          {movies.map((movie) => (
+            <div key={movie.id}>
+              <img src={movie.medium_cover_image} />
+              <h3>Title : {movie.title}</h3>
+              <p>Summary : {movie.summary}</p>
+              <ul>
+                {movie.genres.map((genres) => (
+                  <li key={genres}> {genres}</li>
+                ))}
+              </ul>
+              <hr></hr>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
