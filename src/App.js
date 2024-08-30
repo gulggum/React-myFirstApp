@@ -1,7 +1,6 @@
 // import Button from "./Button";
 // import styles from "./App.module.css";
-
-// import { json, response } from "express";
+import Movies from "./components/Movies";
 import { useEffect, useState } from "react";
 
 function App() {
@@ -28,17 +27,13 @@ function App() {
       ) : (
         <div>
           {movies.map((movie) => (
-            <div key={movie.id}>
-              <img src={movie.medium_cover_image} />
-              <h3>Title : {movie.title}</h3>
-              <p>Summary : {movie.summary}</p>
-              <ul>
-                {movie.genres.map((genres) => (
-                  <li key={genres}> {genres}</li>
-                ))}
-              </ul>
-              <hr></hr>
-            </div>
+            <Movies
+              key={movies.id}
+              coverImg={movie.medium_cover_image}
+              title={movie.title}
+              summary={movie.summary}
+              genres={movie.genres}
+            />
           ))}
         </div>
       )}
